@@ -19,6 +19,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float _recoverEnergy = 1;
     [SerializeField] int _recoverEnergyCount = 0;
     Slider _slider;
+    Vector3 _latestPos;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +38,11 @@ public class PlayerMove : MonoBehaviour
 
         if(Input.GetKey(KeyCode.LeftShift) && _currentEnergy != 0)
         {
-            _rb.velocity = new Vector3(_playerMoveX, 0, _playerMoveZ).normalized * _playerDushSpeed;
-            _currentEnergy -= _energy;
+           // _rb.velocity = new Vector3(_playerMoveX, _rb.velocity.y, _playerMoveZ).normalized * _playerDushSpeed;
+           Vector3 vec = new Vector3(_playerMoveX, 0, _playerMoveZ).normalized * _playerDushSpeed;
+           vec.y = _rb.velocity.y;
+            _rb.velocity = vec;
+           _currentEnergy -= _energy;
             if(_currentEnergy <= 0)
             {
                 _currentEnergy = 0;
@@ -46,10 +50,22 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            _rb.velocity = new Vector3(_playerMoveX, 0, _playerMoveZ).normalized * _playerMoveSpeed;
+            //_rb.velocity = new Vector3(_playerMoveX, _rb.velocity.y, _playerMoveZ).normalized * _playerMoveSpeed;
+            Vector3 vec = new Vector3(_playerMoveX, 0, _playerMoveZ).normalized * _playerMoveSpeed;
+            vec.y = _rb.velocity.y;
+            _rb.velocity = vec;
         }
 
-        if(_currentEnergy == 0 && _recoverEnergyCount == 0)
+        //Œü‚«‚Ì’²®
+        //Vector3 diff = transform.position - _latestPos;
+        //_latestPos = transform.position;
+
+        //if(diff.magnitude > 0.01f)
+        //{
+        //    transform.rotation = Quaternion.LookRotation(diff);
+        //}
+
+        if (_currentEnergy == 0 && _recoverEnergyCount == 0)
         {
             _recoverEnergyCount = 200;
         }
