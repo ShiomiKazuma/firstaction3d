@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -19,7 +21,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float _recoverEnergy = 1;
     [SerializeField] int _recoverEnergyCount = 0;
     Slider _slider;
-    Vector3 _latestPos;
+    Vector3 _dir;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,10 +38,12 @@ public class PlayerMove : MonoBehaviour
         _playerMoveX = Input.GetAxisRaw("Horizontal");
         _playerMoveZ = Input.GetAxisRaw("Vertical");
 
-        if(Input.GetKey(KeyCode.LeftShift) && _currentEnergy != 0)
+        _dir = transform.TransformDirection(_playerMoveX, 0, _playerMoveZ).normalized;
+
+        if (Input.GetKey(KeyCode.LeftShift) && _currentEnergy != 0)
         {
            // _rb.velocity = new Vector3(_playerMoveX, _rb.velocity.y, _playerMoveZ).normalized * _playerDushSpeed;
-           Vector3 vec = new Vector3(_playerMoveX, 0, _playerMoveZ).normalized * _playerDushSpeed;
+           Vector3 vec = _dir * _playerDushSpeed;
            vec.y = _rb.velocity.y;
             _rb.velocity = vec;
            _currentEnergy -= _energy;
@@ -51,19 +55,11 @@ public class PlayerMove : MonoBehaviour
         else
         {
             //_rb.velocity = new Vector3(_playerMoveX, _rb.velocity.y, _playerMoveZ).normalized * _playerMoveSpeed;
-            Vector3 vec = new Vector3(_playerMoveX, 0, _playerMoveZ).normalized * _playerMoveSpeed;
+            Vector3 vec = _dir * _playerMoveSpeed;
             vec.y = _rb.velocity.y;
             _rb.velocity = vec;
         }
 
-        //Œü‚«‚Ì’²®
-        //Vector3 diff = transform.position - _latestPos;
-        //_latestPos = transform.position;
-
-        //if(diff.magnitude > 0.01f)
-        //{
-        //    transform.rotation = Quaternion.LookRotation(diff);
-        //}
 
         if (_currentEnergy == 0 && _recoverEnergyCount == 0)
         {
@@ -88,5 +84,13 @@ public class PlayerMove : MonoBehaviour
         _slider.value = (float)_currentEnergy / (float)_maxEnergy;
 
         Debug.Log(_currentEnergy);
+    }
+
+    private void FixedUpdate()
+    {
+        if(_dir != Vector3.zero)
+        {
+            transform.forward = _dir;
+        }
     }
 }
