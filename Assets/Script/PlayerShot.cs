@@ -33,7 +33,7 @@ public class PlayerShot : MonoBehaviour
 
         if(_bulletButtonDown)
         {
-            _bulletCharge += 5.0f;
+            _bulletCharge += 2.0f;
 
             if(_bulletCharge > _bulletChargeMax)
             {
@@ -46,7 +46,6 @@ public class PlayerShot : MonoBehaviour
         {
             Instantiate(_bullet, _muzzle.transform.position, _muzzle.transform.rotation);
             _bulletButtonDown = false;
-            _bulletCharge = 0.0f;
         }
     }
 

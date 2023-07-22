@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] float _bulletSpeed = 1.0f;
     Rigidbody _bulletRb;
     float _timer;
     float _bulletDeathCount = 3.0f;
+    float _bulletSpeed;
     // Start is called before the first frame update
     void Start()
     {
         _bulletRb = GetComponent<Rigidbody>();
-        Vector3 vec = new Vector3(0, 1, 1).normalized * _bulletSpeed;
+
+        PlayerShot playerShot = GameObject.Find("Player").GetComponent<PlayerShot>();
+        _bulletSpeed = playerShot._bulletCharge;
+
+        Debug.Log(playerShot._bulletCharge);
+        Vector3 vec = transform.TransformDirection(0, 1, 1).normalized * _bulletSpeed;
         _bulletRb.AddForce(vec, ForceMode.Impulse);
         _timer = 0;
+        playerShot._bulletCharge = 0.0f;
     }
 
     // Update is called once per frame
