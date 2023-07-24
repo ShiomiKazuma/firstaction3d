@@ -11,7 +11,8 @@ public class PlayerStatas : MonoBehaviour
         if(collision.gameObject.tag == "Poision")
         {
             _playerSt = PlayerSt.Poision;
-
+            Material mat = this.GetComponent<Renderer>().material;
+            mat.color = new Color(128, 0, 128);
         }
     }
     public enum PlayerSt
