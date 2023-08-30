@@ -1,26 +1,34 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class MizePlayerMove : MonoBehaviour
 {
     Rigidbody _rb;
-    [SerializeField] float _playerSpeed = 1.0f;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] float _moveSpeed = 10f;
+    [SerializeField] float _cameraSpeed = 10f;
+    float x, z;
+    Vector3 velocity;
+    private void Start()
     {
         _rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        Vector3 velocity = new Vector3(x, 0, z);
+        var cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
 
-        _rb.AddForce(velocity * _playerSpeed, ForceMode.Force);
+        x = Input.GetAxis("Horizontal");
+        z = Input.GetAxis("Vertical");
+
+        velocity = cameraForward * z + Camera.main.transform.right * x;
+
+        //マウスでカメラの視点を操作する
+        float cameraX = Input.GetAxis ("Mouse X") * _cameraSpeed;
+        transform.RotateAround(transform.position, Vector3.up, cameraX);
+    }
+    private void FixedUpdate()
+    {
+        _rb.velocity = velocity * _moveSpeed;
     }
 }
